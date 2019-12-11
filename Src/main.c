@@ -98,10 +98,25 @@ unsigned char EIGHT[] = {0b01110000,0b10001000,0b10001000,0b10001000,0b01110000,
 unsigned char NINE[] = {0b01110000,0b10001000,0b00001000,0b01111000,0b10001000,0b10001000,0b10001000,0b01110000};
 unsigned char ZERO[] = {0b01110000,0b10001000,0b10001000,0b10001000,0b11001000,0b10101000,0b10011000,0b01110000};
 unsigned char SMILE[] = {0b01110000,0b10001000,0b10001000,0b00100000,0b00100000,0b0000000,0b01010000,0b00000000};
+unsigned char EYELEFT[] = {0b00000000,0b00000000,0b00010000,0b00110000,0b00110000,0b00110000,0b00000000,0b00000000};
+unsigned char EYELEFTUP[] = {0b00000000,0b00000000,0b00000000,0b00010000,0b00110000,0b00110000,0b00110000,0b00000000};
+unsigned char EYERIGHTUP[] = {0b00000000,0b00000000,0b00000000,0b00100000,0b01100000,0b01100000,0b01100000,0b00000000};
+unsigned char EYERIGHT[] = {0b00000000,0b00000000,0b00100000,0b01100000,0b01100000,0b01100000,0b00000000,0b00000000};
+unsigned char EYERIGHTDOWN[] = {0b00000000,0b00100000,0b01100000,0b01100000,0b01100000,0b00000000,0b00000000,0b00000000};
+unsigned char EYELEFTDOWN[] = {0b00000000,0b00010000,0b00110000,0b00110000,0b00110000,0b00000000,0b00000000,0b00000000};
+unsigned char TREE[] = {0b00011000,0b00011000,0b00011000,0b00011000,0b11111111,0b01111110,0b00111100,0b00011000};
+unsigned char BIGHART[] = {0b00011000,0b00111100,0b011111110,0b11111111,0b11111111,0b11111111,0b01100110,0b00000000};
+unsigned char MIDHART[] = {0b00000000,0b00011000,0b01111110,0b01111110,0b01111110,0b00100100,0b00000000,0b00000000};
+unsigned char MIDSMALLHART[] = {0b00000000,0b00000000,0b00011000,0b00111100,0b00111100,0b00100100,0b00000000,0b00000000};
+unsigned char SMALLHART[] = {0b00000000,0b00000000,0b00000000,0b00011000,0b00011000,0b00000000,0b00000000,0b00000000};
 unsigned char *Alphabet[] = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z};
 unsigned char *Numeric[] = {ZERO, ONE,TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE};
 unsigned char AlphabetCharactersLower[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 void WriteWord(char* Word[],int arrSize);
+void tree();
+void EYE();
+void HARTBIT();
+void Write2Word(char* Word[],char* Word2[],int arrSize);
 static uint8_t data[4] = {0x0, 0x0, 0x0, 0x0};  // defined a data matrix
 
 /* USER CODE END 0 */
@@ -146,13 +161,122 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  unsigned char* w[10] = {A,L,E,X};
-	  WriteWord(w,4);
+	  unsigned char* w[10] = {N,Y,TWO,ZERO};
+	  //unsigned char* w2[10] = {EYELEFT,EYELEFTUP,EYERIGHTUP,EYERIGHT,EYERIGHTDOWN,EYELEFTDOWN};
+	  HARTBIT();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
+void EYE()
+{
+	unsigned char* w[10] = {O,O,O,O,O,O};
+	unsigned char* w2[10] = {EYELEFT,EYELEFTUP,EYERIGHTUP,EYERIGHT,EYERIGHTDOWN,EYELEFTDOWN};
+	for(int j=0;j<6;j++)
+	  {
+	    for(int z=0;z<500;z++)
+	    {
+	      for (int i = 0; i < 8; i++)
+	      {
 
+
+	          data[0] =~0;
+	          data[1] =~w[j][i];        // color blue
+	          data[2] =~w2[j][i];
+
+	        data[3] = 0x1<<i;
+	        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+	              HAL_SPI_Transmit(&hspi1,&data[0],1,10);
+	              HAL_SPI_Transmit(&hspi1,&data[1],1,10);
+	              HAL_SPI_Transmit(&hspi1,&data[2],1,10);
+	              HAL_SPI_Transmit(&hspi1,&data[3],1,10);
+	              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+	        //delay(100);
+	      }
+	    }
+	  }
+}
+void Write2Word(char* Word[],char* Word2[],int arrSize)
+{
+  for(int j=0;j<arrSize;j++)
+  {
+    for(int z=0;z<500;z++)
+    {
+      for (int i = 0; i < 8; i++)
+      {
+
+
+          data[0] =~0;
+          data[1] =~Word[j][i];        // color blue
+          data[2] =~Word2[j][i];
+
+        data[3] = 0x1<<i;
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+              HAL_SPI_Transmit(&hspi1,&data[0],1,10);
+              HAL_SPI_Transmit(&hspi1,&data[1],1,10);
+              HAL_SPI_Transmit(&hspi1,&data[2],1,10);
+              HAL_SPI_Transmit(&hspi1,&data[3],1,10);
+              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+        //delay(100);
+      }
+    }
+  }
+}
+void HARTBIT()
+{
+	unsigned char* w[10] = {SMALLHART,MIDSMALLHART,MIDHART,BIGHART};
+  for(int j=0;j<4;j++)
+  {
+
+	  for(int z=0;z<300;z++)
+	     {
+      for (int i = 0; i < 8; i++)
+      {
+
+
+          data[0] =~w[j][i];
+          data[1] =~0;        // color blue
+          data[2] =~0;
+
+        data[3] = 0x1<<i;
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+        HAL_SPI_Transmit(&hspi1,&data[0],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[1],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[2],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[3],1,10);
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+        //delay(100);
+      }
+	     }
+  }
+}
+void tree()
+{
+	unsigned char* w[10] = {TREE};
+  for(int j=0;j<1;j++)
+  {
+
+
+      for (int i = 0; i < 8; i++)
+      {
+
+
+          data[0] =~0;
+          data[1] =~0;        // color blue
+          data[2] =~w[j][i];
+
+        data[3] = 0x1<<i;
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+        HAL_SPI_Transmit(&hspi1,&data[0],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[1],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[2],1,10);
+        HAL_SPI_Transmit(&hspi1,&data[3],1,10);
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+        //delay(100);
+      }
+
+  }
+}
 void WriteWord(char* Word[],int arrSize)
 {
   for(int j=0;j<arrSize;j++)
